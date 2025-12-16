@@ -1,8 +1,8 @@
-%% ==============================================================
+%% ===============================================================
 %  FMCW Radar – TX & RX Instantaneous Frequency vs Time
-% Author's : Basel Shrief Hemaid , Mariam Ahmed Mohammed Ali Reda
-% Codes    : 91240202            , 91240733
-%  ==============================================================
+%  Author's : Basel Shrief Hemaid , Mariam Ahmed Mohammed Ali Reda
+%  Codes    : 91240202            , 91240733
+%  ===============================================================
 
 % Parameters and time axis for the Main simulation system
 
