@@ -62,15 +62,17 @@ plot_Tx(T_plot, Tx, N_plot);                                                 % P
 plot_Rx(T_plot, Rx, N_plot, Colors, SNR(SNR_index));                         % Plotting the received signal
 
 
-%% Beat Frequency with its LOW Pass Filter
-Beat_signal = Beat_lpf(Tx, Rx, Fs,T_plot, N_plot, Colors);                                        % Estimating and Plotting the beat signal for each target 
-[FFT_beat, f_axis, Processing_time] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs);      % FFT for fast-axis
-[CFAR_th, R_est, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);                 % Range detection and applying Constant False Alarm Rate (CFAR) concept
-plot_range_spectrum(f_axis, FFT_beat, f_beats, R_est, pks);                                       % Plotting the range spectrum showing the detected ranges for each target/object
+%% Beat Frequency with its LOW Pass Filter then
+fbeat = fbeat_lpf(Tx, Rx, Fs,T_plot, N_plot, Colors);                                       % Plotting the beat frequency for each target 
+[FFT_beat, f_axis, Processing_time] = range_fft_one_chirp(fbeat, T_total, Tchirp, Fs);      % FFT for slow-axis
+[CFAR_threshold, R_est, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);    % Range detection and applying Constant False Alarm Rate (CFAR) concept
+% ================= Plot =================
+plot_range_spectrum(f_axis, FFT_beat, f_beats, R_est, pks);
+
 fprintf('Range Processing Time: %.6f seconds\n', Processing_time);
 
 
-%% Velocity estimation 
-plot_range_spectrum_with_cfar(FFT_beat, f_axis, CFAR_th,R_est, pks, Range, c, s);
-[RD_map_dB, range_axis, velocity_axis] = range_velocity_map_with_plot(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);
+%% Ranges and Velocities Estimations
+plot_range_spectrum_with_cfar(FFT_beat, f_axis, CFAR_threshold,R_est, pks, Range, c, s);
+[RD_map_dB, range_axis, velocity_axis] = range_velocity_map_with_plot(fbeat, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);
 doppler_spectrum_with_summary(abs(RD_map_dB), range_axis, velocity_axis,R_est, Range, Velocity, Processing_time);

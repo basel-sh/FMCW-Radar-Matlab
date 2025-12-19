@@ -1,6 +1,4 @@
-function [RD_map_dB, range_axis, velocity_axis] = ...
-    range_velocity_map_with_plot( ...
-    beat_targets, T_total, Tchirp, PRI, Ts, Nc, Fs, c, fc, slope)
+function [RD_map_dB, range_axis, velocity_axis] = range_velocity_map_with_plot(beat_targets, T_total, Tchirp, PRI, Ts, Nc, Fs, c, fc, slope)
 
 % RANGE_VELOCITY_MAP_WITH_PLOT
 %   1) Builds Range–Velocity map using reshape method
