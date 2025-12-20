@@ -1,5 +1,7 @@
 function Plot_Range_Velocity_Map(RD_map_dB, range_axis, velocity_axis)
 
+%Just Ploting the Range ,Veloicty Axis that got from the Compute Function.
+
 figure;
 imagesc(range_axis, velocity_axis, RD_map_dB);
 axis xy;
