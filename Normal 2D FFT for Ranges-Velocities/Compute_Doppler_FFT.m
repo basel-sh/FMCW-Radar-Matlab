@@ -1,11 +1,7 @@
-function [RD_map_dB, range_axis, velocity_axis] = Compute_Doppler_FFT(beat_targets, T_total, Tchirp,PRI, Ts, Nc, Fs, c, fc, slope)
-% -------------------------------------------------------------
-% compute_range_doppler_fft
-% Performs:
-%   1) Fast-time FFT  → Range processing
-%   2) Slow-time FFT  → Doppler (velocity) processing
-% Output is the full Range–Doppler map (NO plotting)
-% -------------------------------------------------------------
+function [RD_map_dB, range_axis, velocity_axis] = ...
+    Compute_Doppler_FFT(beat_targets, T_total, Tchirp, PRI, Ts, Nc, Fs, c, fc, slope)
+
+    tic;    % Start timer for range estimation processing time 
 
 % ---- Active fast-time samples (inside chirp only) ----
 i_range = (T_total >= 0) & (T_total < Tchirp);

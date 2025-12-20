@@ -1,7 +1,7 @@
 % This function plots the beak frequencies of each target with a cursor
 % showing the estimated range for each corresponding target
 
-function plot_fbeat(f_axis, FFT_beat, f_beats, R, pks)
+function Plot_New_FBeat(f_axis, FFT_beat, f_beats, R, pks)
 
     BeatFFT_sum = sum(FFT_beat, 1);
 
@@ -11,7 +11,7 @@ function plot_fbeat(f_axis, FFT_beat, f_beats, R, pks)
 
     xlabel('Frequency (MHz)');
     ylabel('Magnitude');
-    title('Beat Frequency');
+    title('Beat Frequency using CFAR for Range Detection from Noise');
 
     for k = 1:length(f_beats)
         xline(f_beats(k)/1e6, '--r', 'LineWidth', 1.5);
