@@ -1,6 +1,4 @@
-function [RD_map_dB, range_axis, velocity_axis] = ...
-    compute_range_doppler_fft(beat_targets, T_total, Tchirp, ...
-                              PRI, Ts, Nc, Fs, c, fc, slope)
+function [RD_map_dB, range_axis, velocity_axis] = Compute_Doppler_FFT(beat_targets, T_total, Tchirp,PRI, Ts, Nc, Fs, c, fc, slope)
 % -------------------------------------------------------------
 % compute_range_doppler_fft
 % Performs:
