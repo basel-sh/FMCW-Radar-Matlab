@@ -28,6 +28,7 @@ Fmax   = Parameters.fmax;   % Maximum Frequency
 Nc     = Parameters.Nc;     % Number of Chirps
 
 %% Target Scenario
+
 Range = [50 , 250];                 % Ranges  
 Velocity = [-100 , 100];            % Velocities
 Fdoppler = 2 * Velocity * Fc / c;   % Doppler Frequency 
@@ -36,7 +37,7 @@ L = length(Range);                  % Number of Detected Elements
 % Signal to Noise Ratio values 
 SNR = [5 10 15];  
 SNR_length = length(SNR);
-SNR_index = randi(length(SNR));     % Random switching between SNR values for testing
+SNR_index = 2;     % Random switching between SNR values for testing
 
 % Time parameters for plotting and figures
 T_PRI   = 0:Ts:PRI-Ts;
@@ -63,14 +64,15 @@ plot_Rx(T_plot, Rx, N_plot, Colors, SNR(SNR_index));                         % P
 
 
 %% Beat Frequency with its LOW Pass Filter
+
 Beat_signal = Beat_lpf(Tx, Rx, Fs,T_plot, N_plot, Colors);                                        % Estimating and Plotting the beat signal for each target 
 [FFT_beat, f_axis, Processing_time] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs);      % FFT for fast-axis
-[CFAR_th, R_est, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);                 % Range detection and applying Constant False Alarm Rate (CFAR) concept
-plot_range_spectrum(f_axis, FFT_beat, f_beats, R_est, pks);                                       % Plotting the range spectrum showing the detected ranges for each target/object
-fprintf('Range Processing Time: %.6f seconds\n', Processing_time);
+[CFAR_th, R, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);                     % Range detection and applying Constant False Alarm Rate (CFAR) concept
+plot_fbeat(f_axis, FFT_beat, f_beats, R, pks);                                                    % Plotting the result of the FFT showing the detected beat frequency for each target
 
 
-%% Velocity estimation 
-plot_range_spectrum_with_cfar(FFT_beat, f_axis, CFAR_th,R_est, pks, Range, c, s);
-[RD_map_dB, range_axis, velocity_axis] = range_velocity_map_with_plot(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);
-doppler_spectrum_with_summary(abs(RD_map_dB), range_axis, velocity_axis,R_est, Range, Velocity, Processing_time);
+%% Velocity and Range final estimation and plotting the results
+
+range_spectrum_cfar(FFT_beat, f_axis, CFAR_th,R, pks, Range, c, s);                                                                 % Plotting the detected ranges of each target
+[RD_map_dB, range_axis, velocity_axis] = range_doppler_map(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);                % Plotting the Range-Doppler Map
+doppler_spectrum(abs(RD_map_dB), range_axis, velocity_axis,R, Range, Velocity, Processing_time);                                    % Plotting the detected velocities of each target

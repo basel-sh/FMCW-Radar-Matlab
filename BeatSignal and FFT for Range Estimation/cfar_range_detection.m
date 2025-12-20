@@ -2,7 +2,7 @@
 % This functions applies CFAR and estimates the range of each target
 % by detecting the peaks 
 
-function [CFAR_th, R_est, f_beats, pks] = cfar_range_detection(BeatFFT_all, f_axis, c, slope, L)
+function [CFAR_th, R, f_beats, pks] = cfar_range_detection(BeatFFT_all, f_axis, c, slope, L)
 
     BeatFFT_sum = sum(BeatFFT_all, 1);
     N = length(BeatFFT_sum);
@@ -25,7 +25,7 @@ function [CFAR_th, R_est, f_beats, pks] = cfar_range_detection(BeatFFT_all, f_ax
         CFAR_th(i) = noise_mean * Offset_Factor;
     end
 
-    
+
     % Peak detection
     valid = (f_axis > 1e6) & (f_axis < 950e6);
     threshold_val = 0.05 * max(BeatFFT_sum(valid));
@@ -36,5 +36,5 @@ function [CFAR_th, R_est, f_beats, pks] = cfar_range_detection(BeatFFT_all, f_ax
     locs = locs_all(locs_rel);
 
     f_beats = f_axis(locs);
-    R_est = (c * f_beats) / (2 * slope);
+    R = (c * f_beats) / (2 * slope);
 end

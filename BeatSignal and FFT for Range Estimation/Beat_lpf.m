@@ -4,7 +4,7 @@
 
 function Beat_signal = Beat_lpf(tx, rx, Fs,T_plot, N_plot, Colors)
 
-    fcut = 850e6;
+    fcut = 950e6;
     L = size(rx,1);
     N_time = length(tx);
     Beat_signal = zeros(L, N_time);
@@ -27,7 +27,7 @@ function Beat_signal = Beat_lpf(tx, rx, Fs,T_plot, N_plot, Colors)
              'LineWidth',1.2, 'Color', Colors(l,:));
         xlabel('Time (\mus)');
         ylabel('Amplitude');
-        title(['Beat Signal Z_l(t) = TX(t) · conj(RX Target ', num2str(l), ')']);
+        title(['Beat Signal for target (', num2str(l), ')']);
         grid on;
     end
 end

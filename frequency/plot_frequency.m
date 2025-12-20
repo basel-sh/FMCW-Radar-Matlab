@@ -12,7 +12,7 @@ function plot_frequency(t_plot, f_tx, f_rx, N_plot, L, colors)
 
     xlabel('Time (\mus)');
     ylabel('Frequency (GHz)');
-    title('TX and RX FMCW Instantaneous Frequency (Zoomed)');
+    title('TX and RX Frequencies');
     legend(['TX', arrayfun(@(x)sprintf('RX Target %d',x), 1:L,'UniformOutput',false)]);
     ylim([75 78]);
     grid on;
