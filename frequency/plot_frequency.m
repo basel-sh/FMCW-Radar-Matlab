@@ -6,7 +6,7 @@ function plot_frequency(t_plot, f_tx, f_rx, N_plot, L, colors)
     figure; hold on;
     plot(t_plot*1e6, f_tx(1:N_plot)/1e9, 'k', 'LineWidth', 2);
 
-    for l = 1:L
+    for l = 1:L % Each Target
         plot(t_plot*1e6, f_rx(l,1:N_plot)/1e9, 'LineWidth', 2, 'Color', colors(l,:));
     end
 

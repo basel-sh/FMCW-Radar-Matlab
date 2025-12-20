@@ -5,7 +5,7 @@ function plot_Rx(t_plot, rx, N_plot, colors, SNR)
     figure; hold on;
     L = size(rx,1);
 
-    for l = 1:L
+    for l = 1:L   %For Each Target
         plot(t_plot*1e6, real(rx(l,1:N_plot)), 'LineWidth',1.2,'Color',colors(l,:));
     end
 

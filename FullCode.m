@@ -51,9 +51,9 @@ T_plot = T_total(1:N_plot);
 %% Signals and frequencies 
 
 % Linear Frequency Modulation (LFM) Plots for Understanding and Analyzing 
-f_Tx = generate_ftx(Fmin, s, T_PRI, T_chirp, Nc);
-f_Rx = generate_frx(Fmin, s, T_PRI, T_chirp, Range, c, Ts, Nc);
-plot_frequency(T_plot, f_Tx, f_Rx, N_plot, L, Colors);
+F_TX = generate_ftx(Fmin, s, T_PRI, T_chirp, Nc);
+F_RX = generate_frx(Fmin, s, T_PRI, T_chirp, Range, c, Ts, Nc);
+plot_frequency(T_plot, F_TX, F_RX, N_plot, L, Colors);
 
 % Signals Generation and simulation (Transmitted signal and Received signal)
 Tx = generate_Tx(T_total, Fmin, BW, Tchirp, PRI, Nc);                        % Generating the Transmitted Signal of the radar
@@ -71,8 +71,16 @@ Beat_signal = Beat_lpf(Tx, Rx, Fs,T_plot, N_plot, Colors);                      
 plot_fbeat(f_axis, FFT_beat, f_beats, R, pks);                                                    % Plotting the result of the FFT showing the detected beat frequency for each target
 
 
-%% Velocity and Range final estimation and plotting the results
+%% Final Estimation and Visualization (Correct Order)
 
-range_spectrum_cfar(FFT_beat, f_axis, CFAR_th,R, pks, Range, c, s);                                                                 % Plotting the detected ranges of each target
-[RD_map_dB, range_axis, velocity_axis] = range_doppler_map(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);                % Plotting the Range-Doppler Map
-doppler_spectrum(abs(RD_map_dB), range_axis, velocity_axis,R, Range, Velocity, Processing_time);                                    % Plotting the detected velocities of each target
+% 1️⃣ Compute Range–Doppler FFT ONCE
+[RD_map_dB, range_axis, velocity_axis] = compute_range_doppler_fft(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s);
+
+% 2️⃣ Range vs Magnitude
+plot_range_spectrum_from_rd(RD_map_dB, range_axis, Range);
+
+% 3️⃣ Velocity vs Magnitude
+plot_velocity_spectrum_from_rd(RD_map_dB, range_axis, velocity_axis,R, Range, Velocity, Processing_time);
+
+% 4️⃣ Range–Velocity Map (LAST)
+plot_range_velocity_map(RD_map_dB, range_axis, velocity_axis);
