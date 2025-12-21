@@ -8,7 +8,7 @@ function Beat_signal = Beat_mixer(tx, rx)
 
     Beat_signal = zeros(L, N_time);
 
-    % -------- Mixer --------
+    % Mixer (Mixes the transmitted signal and the received signal to get the frequency difference that represents the beat and doppler frequencies)
     for l = 1:L
         Beat_signal(l, :) = tx .* conj(rx(l, :));
     end

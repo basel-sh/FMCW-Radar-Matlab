@@ -9,7 +9,7 @@ clear; close all; clc;
 % Project Folders
 addpath('frequency');
 addpath('amplitude');
-addpath('Beat Frequency and LowPass Filter\')
+addpath('Beat Frequency and LowPass Filter\');
 addpath('CFAR with FFT for Range Estimation\');
 addpath('Normal 2D FFT for Ranges-Velocities\');
 
@@ -31,15 +31,15 @@ Nc     = Parameters.Nc;     % Number of Chirps
 
 
 %% Target Scenario
-Range = [10, 50 , 250 , 125];                 % Ranges  
-Velocity = [70 , -100 , 25, 100];            % Velocities
+Range = [50 , 145];                 % Ranges  
+Velocity = [78.4 , -50.5];              % Velocities
 Fdoppler = 2 * Velocity * Fc / c;   % Doppler Frequency 
 L = length(Range);                  % Number of Detected Elements
 
 % Signal to Noise Ratio values 
 SNR = [5 10 15];  
 SNR_length = length(SNR);
-SNR_index = 1;     % Random switching between SNR values for testing
+SNR_index = 1;    
 
 % Time parameters for plotting and figures
 T_PRI   = 0:Ts:PRI-Ts;
@@ -67,18 +67,20 @@ plot_Rx(T_plot, Rx, N_plot, Colors, SNR(SNR_index));                         % P
 
 
 %% Beat Frequency with Mixer and LOW Pass Filter
-Beat_raw    = Beat_mixer(Tx, Rx); % Mixer to Get Beat Frequency                     
+Beat_raw    = Beat_mixer(Tx, Rx);                             % Mixer to Get Beat Frequency                     
 Beat_signal = Beat_lpf(Beat_raw, Fs, T_plot, N_plot, Colors); % Low Pass Filter for Better Data
+
 
 %% Final Estimation and Visualizations
 [RD_map_dB, range_axis, velocity_axis] = Compute_Doppler_FFT(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s); % Compute 2D Doppler FFT ONCE for Fast Time and Slow Time
-[R_est, V_est, Processing_time] = detect_targets_RD(RD_map_dB, range_axis, velocity_axis, L);
-Plot_Range_Vs_Magnitude(RD_map_dB, range_axis, R_est); % Range Vs Magnitude Plot
-Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis, V_est); % Velocity Vs Magnitude Plot
-Plot_Range_Velocity_Map(RD_map_dB, range_axis, velocity_axis); %Range–Velocity Map Plot
-Display_Target_Estimation_Summary(R_est, V_est, Processing_time); % Summarizing the Results
+[R, V, Processing_time] = detect_targets_RD(RD_map_dB, range_axis, velocity_axis, L);
+Plot_Range_Vs_Magnitude(RD_map_dB, range_axis, R); % Range Vs Magnitude Plot
+Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis, V); % Velocity Vs Magnitude Plot
+Plot_Range_Velocity_Map(RD_map_dB, range_axis, velocity_axis);                   % Range–Velocity Map Plot
+Display_Target_Estimation_Summary(R, V, Processing_time);                        % Summarizing the Results
+
 
 %% Bonussssssssssssss Testing CFAR for Range Detection
-[FFT_beat, f_axis] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs);      % FFT for fast-axis
-[CFAR_th, R, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);     % Range detection and applying Constant False Alarm Rate (CFAR) concept
-Plot_New_FBeat(f_axis, FFT_beat, f_beats, R, pks);     % Plotting the result of the FFT showing the detected beat frequency for each target
+[FFT_beat, f_axis] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs);               % FFT for fast-axis
+[CFAR_th, R, f_beats, pks] = cfar_range_detection(FFT_beat, f_axis, c, s, L);    % Range detection and applying Constant False Alarm Rate (CFAR) concept
+Plot_New_FBeat(f_axis, FFT_beat, f_beats, R, pks);                               % Plotting the result of the FFT showing the detected beat frequency for each target
