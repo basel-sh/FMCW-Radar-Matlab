@@ -31,8 +31,8 @@ Nc     = Parameters.Nc;     % Number of Chirps
 
 
 %% Target Scenario
-Range = [50 , 250];                 % Ranges  
-Velocity = [-100 , 100];            % Velocities
+Range = [10, 50 , 250 , 125];                 % Ranges  
+Velocity = [70 , -100 , 25, 100];            % Velocities
 Fdoppler = 2 * Velocity * Fc / c;   % Doppler Frequency 
 L = length(Range);                  % Number of Detected Elements
 
@@ -72,8 +72,9 @@ Beat_signal = Beat_lpf(Beat_raw, Fs, T_plot, N_plot, Colors); % Low Pass Filter 
 
 %% Final Estimation and Visualizations
 [RD_map_dB, range_axis, velocity_axis] = Compute_Doppler_FFT(Beat_signal, T_total, Tchirp, PRI, Ts, Nc, Fs, c, Fc, s); % Compute 2D Doppler FFT ONCE for Fast Time and Slow Time
-[R_est, Processing_time] = Plot_Range_Vs_Magnitude(RD_map_dB, range_axis, Range); % Range vs Magnitude Plot
-V_est = Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis); % Velocity Vs Magnitude Plot
+[R_est, V_est, Processing_time] = detect_targets_RD(RD_map_dB, range_axis, velocity_axis, L);
+Plot_Range_Vs_Magnitude(RD_map_dB, range_axis, R_est); % Range Vs Magnitude Plot
+Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis, V_est); % Velocity Vs Magnitude Plot
 Plot_Range_Velocity_Map(RD_map_dB, range_axis, velocity_axis); %Range–Velocity Map Plot
 Display_Target_Estimation_Summary(R_est, V_est, Processing_time); % Summarizing the Results
 

@@ -29,7 +29,8 @@ RD_map = fftshift(fft(range_fft, Nfft_d, 1), 1);
 f_range = (0:Nfft_r/2-1) * Fs / Nfft_r;
 range_axis = c * f_range / (2 * slope);
 v_max = c / (4 * fc * PRI);
-velocity_axis = linspace(-v_max, v_max, Nfft_d);
+velocity_axis = linspace(v_max, -v_max, Nfft_d);
+
 RD_map_dB = 20 * log10(abs(RD_map)); % Convert to dB
 
 end

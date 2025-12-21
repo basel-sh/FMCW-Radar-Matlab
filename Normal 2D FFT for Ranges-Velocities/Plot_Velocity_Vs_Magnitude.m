@@ -1,29 +1,43 @@
-function V_est = Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis)
+function Plot_Velocity_Vs_Magnitude( ...
+    RD_map_dB, velocity_axis, V_est)
+
+% VELOCITY VS MAGNITUDE (USING PAIRED TARGETS ONLY)
 
 velocity_spectrum = max(RD_map_dB, [], 2);
 velocity_spectrum = velocity_spectrum(:);
 
-% Ploting the Graph
 figure; hold on; grid on;
-plot(velocity_axis, velocity_spectrum, 'k', 'LineWidth', 1.6, 'DisplayName', 'Velocity Spectrum');
+plot(velocity_axis, velocity_spectrum, 'k', 'LineWidth', 1.6);
 
-%Process of Finding the Peak Automaticly and Exporting it to the main file
-minPeakProm = 6;
-[pks, locs] = findpeaks(velocity_spectrum, 'MinPeakProminence', minPeakProm, 'MinPeakDistance', round(length(velocity_axis)/20));
-V_est = velocity_axis(locs);
 colors = lines(length(V_est));
+legendText = {'Velocity Spectrum'};
 
-for k = 1:length(V_est) % Plot For Each Target 
-    xline(V_est(k), '--', 'Color', colors(k,:), 'LineWidth', 1.8, 'DisplayName', sprintf('Peak %d: %.2f m/s', k, V_est(k)));
-    plot(V_est(k), pks(k), 'o', 'Color', colors(k,:), 'MarkerFaceColor', colors(k,:), 'MarkerSize', 7, 'HandleVisibility','off');
-    text(V_est(k), pks(k) + 2, sprintf('%.2f m/s', V_est(k)), 'Color', colors(k,:), 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
+for k = 1:length(V_est)
+
+    % Find closest velocity bin
+    [~, idx] = min(abs(velocity_axis - V_est(k)));
+
+    plot(V_est(k), velocity_spectrum(idx), 'o', ...
+        'MarkerSize', 7, ...
+        'MarkerFaceColor', colors(k,:), ...
+        'MarkerEdgeColor', colors(k,:));
+
+    xline(V_est(k), '--', ...
+        'Color', colors(k,:), ...
+        'LineWidth', 1.4);
+
+    text(V_est(k), velocity_spectrum(idx) + 2, ...
+        sprintf('%.2f m/s', V_est(k)), ...
+        'Color', colors(k,:), ...
+        'FontWeight', 'bold', ...
+        'HorizontalAlignment', 'center');
+
+    legendText{end+1} = ...
+        sprintf('Target %d: %.2f m/s', k, V_est(k));
 end
 
-% the Labels
 xlabel('Velocity (m/s)');
 ylabel('Magnitude (dB)');
-title('Velocity Vs Magnitude');
-ylim([min(velocity_spectrum)-5, max(velocity_spectrum)+12]); % Automatic Limit for the Y-axis Magnitude
-legend('Location','best');
-
+title('Velocity vs Magnitude (Paired RD Targets)');
+legend(legendText, 'Location', 'best');
 end
