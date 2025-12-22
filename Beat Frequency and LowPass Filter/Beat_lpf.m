@@ -3,7 +3,7 @@
 
 function Beat_signal_filter = Beat_lpf(Beat_signal, Fs, T_plot, N_plot, Colors, L)
 
-    fcut = 850e6; % LPF cutoff frequency
+    fcut = 950e6; % LPF cutoff frequency
 
     Beat_signal_filter = zeros(size(Beat_signal));  %initializing
 
