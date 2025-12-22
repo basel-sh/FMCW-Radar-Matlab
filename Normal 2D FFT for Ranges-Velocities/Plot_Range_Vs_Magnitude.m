@@ -1,45 +1,38 @@
-function Processing_time = Plot_Range_Vs_Magnitude( ...
-    RD_map_dB, range_axis, R_est)
+function Plot_Range_Vs_Magnitude(RD_map_dB, range_axis, R)
 
-% RANGE VS MAGNITUDE (USING PAIRED TARGETS ONLY)
+    % Compute range spectrum (max over Doppler)
+    range_spectrum = max(RD_map_dB, [], 1);
 
-range_spectrum = max(RD_map_dB, [], 1);
+    figure; 
+    hold on; 
+    grid on;
 
-figure; hold on; grid on;
-plot(range_axis, range_spectrum, 'k', 'LineWidth', 1.6);
+    % Plot range spectrum line and store handle
+    h = zeros(1, length(R)+1);  
+    h(1) = plot(range_axis, range_spectrum, 'k', 'LineWidth', 1.6);
 
-colors = lines(length(R_est));
-legendText = {'Range Spectrum'};
+    colors = lines(length(R));
 
-for k = 1:length(R_est)
+    for k = 1:length(R)
+        % Find closest range bin
+        [~, idx] = min(abs(range_axis - R(k)));
 
-    % Find closest range bin
-    [~, idx] = min(abs(range_axis - R_est(k)));
+        % Plot marker for target and store handle
+        h(k+1) = plot(R(k), range_spectrum(idx), 'o', 'MarkerSize', 7, 'MarkerFaceColor', colors(k,:), 'MarkerEdgeColor', colors(k,:));
 
-    plot(R_est(k), range_spectrum(idx), 'o', ...
-        'MarkerSize', 7, ...
-        'MarkerFaceColor', colors(k,:), ...
-        'MarkerEdgeColor', colors(k,:));
+        % Plot vertical line (no legend entry)
+        xline(R(k), '--', 'Color', colors(k,:), 'LineWidth', 1.4);
 
-    xline(R_est(k), '--', ...
-        'Color', colors(k,:), ...
-        'LineWidth', 1.4);
+        % Add text label
+        text(R(k), range_spectrum(idx) + 2, sprintf('%.2f m', R(k)), 'Color', colors(k,:), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
+    end
 
-    text(R_est(k), range_spectrum(idx) + 2, ...
-        sprintf('%.2f m', R_est(k)), ...
-        'Color', colors(k,:), ...
-        'FontWeight', 'bold', ...
-        'HorizontalAlignment', 'center');
+    % Build legend using handles
+    legendText = ['Range Spectrum', arrayfun(@(k) sprintf('Target %d: %.2f m', k, R(k)), 1:length(R), 'UniformOutput', false)];
+    legend(h, legendText, 'Location', 'best');
 
-    legendText{end+1} = ...
-        sprintf('Target %d: %.2f m', k, R_est(k));
-end
-
-xlabel('Range (m)');
-ylabel('Magnitude (dB)');
-title('Range vs Magnitude (Paired RD Targets)');
-xlim([0 300]);
-legend(legendText, 'Location', 'best');
-
-Processing_time = toc;
+    xlabel('Range (m)');
+    ylabel('Magnitude (dB)');
+    title('Range vs Magnitude');
+    xlim([0 max(range_axis)]);
 end

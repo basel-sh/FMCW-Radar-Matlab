@@ -1,43 +1,38 @@
-function Plot_Velocity_Vs_Magnitude( ...
-    RD_map_dB, velocity_axis, V_est)
+function Plot_Velocity_Vs_Magnitude(RD_map_dB, velocity_axis, V)
 
-% VELOCITY VS MAGNITUDE (USING PAIRED TARGETS ONLY)
+    % Compute velocity spectrum (max over range)
+    velocity_spectrum = max(RD_map_dB, [], 2);
+    velocity_spectrum = velocity_spectrum(:);
 
-velocity_spectrum = max(RD_map_dB, [], 2);
-velocity_spectrum = velocity_spectrum(:);
+    figure; 
+    hold on; 
+    grid on;
 
-figure; hold on; grid on;
-plot(velocity_axis, velocity_spectrum, 'k', 'LineWidth', 1.6);
+    % Plot velocity spectrum line and store handle
+    h = zeros(1, length(V)+1);  
+    h(1) = plot(velocity_axis, velocity_spectrum, 'k', 'LineWidth', 1.6);
 
-colors = lines(length(V_est));
-legendText = {'Velocity Spectrum'};
+    colors = lines(length(V));
 
-for k = 1:length(V_est)
+    for k = 1:length(V)
+        % Find closest velocity bin
+        [~, idx] = min(abs(velocity_axis - V(k)));
 
-    % Find closest velocity bin
-    [~, idx] = min(abs(velocity_axis - V_est(k)));
+        % Plot marker for target and store handle
+        h(k+1) = plot(V(k), velocity_spectrum(idx), 'o', 'MarkerSize', 7, 'MarkerFaceColor', colors(k,:), 'MarkerEdgeColor', colors(k,:));
 
-    plot(V_est(k), velocity_spectrum(idx), 'o', ...
-        'MarkerSize', 7, ...
-        'MarkerFaceColor', colors(k,:), ...
-        'MarkerEdgeColor', colors(k,:));
+        % Plot vertical line (no legend entry)
+        xline(V(k), '--', 'Color', colors(k,:), 'LineWidth', 1.4);
 
-    xline(V_est(k), '--', ...
-        'Color', colors(k,:), ...
-        'LineWidth', 1.4);
+        % Add text label
+        text(V(k), velocity_spectrum(idx) + 2, sprintf('%.2f m/s', V(k)), 'Color', colors(k,:), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
+    end
 
-    text(V_est(k), velocity_spectrum(idx) + 2, ...
-        sprintf('%.2f m/s', V_est(k)), ...
-        'Color', colors(k,:), ...
-        'FontWeight', 'bold', ...
-        'HorizontalAlignment', 'center');
+    % Build legend using handles
+    legendText = ['Velocity Spectrum', arrayfun(@(k) sprintf('Target %d: %.2f m/s', k, V(k)), 1:length(V), 'UniformOutput', false)];
+    legend(h, legendText, 'Location', 'best');
 
-    legendText{end+1} = ...
-        sprintf('Target %d: %.2f m/s', k, V_est(k));
-end
-
-xlabel('Velocity (m/s)');
-ylabel('Magnitude (dB)');
-title('Velocity vs Magnitude (Paired RD Targets)');
-legend(legendText, 'Location', 'best');
+    xlabel('Velocity (m/s)');
+    ylabel('Magnitude (dB)');
+    title('Velocity vs Magnitude');
 end

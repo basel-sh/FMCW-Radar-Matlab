@@ -1,7 +1,7 @@
 %   This function performs FFT on one chirp (fast-time  FFT) for each
 %   target to obtain the beat-frequency needed for range estimation
 
-function [FFT_beat, f_axis] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs)
+function [FFT_beat, f_axis] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, Fs, L)
 
     i = (T_total >= 0) & (T_total < Tchirp); % Extracting one chirp
 
@@ -9,7 +9,6 @@ function [FFT_beat, f_axis] = range_fft_one_chirp(Beat_signal, T_total, Tchirp, 
     % FFT parameters
     Nfft = 2^nextpow2(sum(i));
     f_axis = (0:Nfft/2-1) * (Fs/Nfft);
-    L = size(Beat_signal,1);
     FFT_beat = zeros(L, length(f_axis));
 
     % Applying FFT for each target
